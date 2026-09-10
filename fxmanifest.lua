@@ -33,4 +33,7 @@ server_scripts {
     "src/server/*.lua"
 }
 
-dependency "rig"
+dependencies {
+    "rig",
+    "rig_interactions"
+}

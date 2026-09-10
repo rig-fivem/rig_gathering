@@ -15,6 +15,7 @@ License: https://github.com/rig-fivem/rig_gathering/blob/main/LICENSE
 --- @section Imports
 
 local _models_cfg = require("configs.models")
+local _materials_cfg = require("configs.materials")
 local _utils = require("src.server.modules.utils")
 
 --- @section State Tables
@@ -68,7 +69,7 @@ end
 
 --- @section Events
 
-RegisterNetEvent("rig_gathering:server:start_searchable", function(category_name, node_id, target_coords)
+RegisterServerEvent("rig_gathering:server:start_searchable", function(category_name, node_id, target_coords)
     local source_id = source
     local player_ped = GetPlayerPed(source_id)
 
@@ -130,7 +131,7 @@ RegisterNetEvent("rig_gathering:server:start_searchable", function(category_name
     TriggerClientEvent("rig_gathering:client:play_searchable_anim", source_id, category_name, node_id, target_coords)
 end)
 
-RegisterNetEvent("rig_gathering:server:collect_searchable", function(category_name, node_id, target_coords)
+RegisterServerEvent("rig_gathering:server:collect_searchable", function(category_name, node_id, target_coords)
     local source_id = source
     local category_data = _models_cfg[category_name]
     if not category_data then return end
@@ -176,6 +177,63 @@ RegisterNetEvent("rig_gathering:server:collect_searchable", function(category_na
                 header = category_data.label,
                 message = "Your inventory is too full to carry this!",
                 icon = "fa-solid fa-triangle-exclamation",
+                duration = 3500
+            })
+        end
+    end
+end)
+
+RegisterServerEvent("rig_gathering:server:hit_material", function(clean_hash, material_label)
+    local source_id = source
+    local material_data = _materials_cfg[clean_hash]
+    if not material_data then return end
+
+    local player_ped = GetPlayerPed(source_id)
+    if not player_ped or player_ped == 0 then return end
+
+    local equipped_weapon = GetSelectedPedWeapon(player_ped)
+    local is_allowed_weapon = false
+    local matched_weapon_name = nil
+
+    for _, weapon_name in ipairs(material_data.allowed_weapons) do
+        if equipped_weapon == GetHashKey(weapon_name) then
+            is_allowed_weapon = true
+            matched_weapon_name = weapon_name
+            break
+        end
+    end
+
+    if not is_allowed_weapon then
+        log("error", "Not using the correct weapon/tool.")
+        return
+    end
+
+    local has_weapon_item = exports.rig_inventory:has_item(source_id, matched_weapon_name, 1)
+
+    if not has_weapon_item then
+        log("error", "Doesnt have item ".. matched_weapon_name)
+        return
+    end
+
+    local player_coords = GetEntityCoords(player_ped)
+
+    local rewards = get_weighted_items(material_data.rewards)
+    if not rewards or #rewards == 0 then return end
+
+    for _, reward in ipairs(rewards) do
+        local success, err = exports.rig_inventory:add_item(source_id, reward.id, reward.amount)
+        if success then
+            exports.rig:notify(source_id, {
+                type = "success",
+                header = material_label or material_data.label or "Gathering",
+                message = ("Gathered %d x %s"):format(reward.amount, reward.label),
+                duration = 3500
+            })
+        else
+            exports.rig:notify(source_id, {
+                type = "error",
+                header = material_label or material_data.label or "Gathering",
+                message = "Your inventory is too full!",
                 duration = 3500
             })
         end
