@@ -20,11 +20,16 @@ return {
         duration = 3.5,
         animation = { dict = "amb@world_human_bum_wash@male@low@idle_a", anim = "idle_a", flags = 1 },
         cooldown = { duration = 60, is_global = true },
-        rewards = { 
-            chance = 100, 
+        rewards = {
+            chance = 100,
             item_amount = { min = 1, max = 3 },
             items = {
-                water = { label = "Water", weight = 25, min = 1, max = 3 }
+                cloth = { label = "Cloth", weight = 30, min = 1, max = 3 },
+                water_empty = { label = "Empty Bottle", weight = 25, min = 1, max = 2 },
+                water_dirty = { label = "Dirty Water", weight = 15, min = 1, max = 2 },
+                water_clean = { label = "Clean Water", weight = 10, min = 1, max = 2 },
+                bread = { label = "Bread", weight = 6, min = 1, max = 1 },
+                canned_dog_food = { label = "Dog Food", weight = 3, min = 1, max = 1 }
             }
         }
     },
@@ -35,12 +40,18 @@ return {
         duration = 3.5,
         animation = { dict = "amb@world_human_bum_wash@male@low@idle_a", anim = "idle_a", flags = 1 },
         cooldown = { duration = 60, is_global = true },
-        rewards = { 
-            chance = 100, 
+        rewards = {
+            chance = 100,
             item_amount = { min = 1, max = 3 },
             items = {
-                water = { label = "Water", weight = 25, min = 1, max = 3 }
+                cloth = { label = "Cloth", weight = 30, min = 1, max = 3 },
+                water_empty = { label = "Empty Bottle", weight = 25, min = 1, max = 2 },
+                water_dirty = { label = "Dirty Water", weight = 15, min = 1, max = 2 },
+                water_clean = { label = "Clean Water", weight = 10, min = 1, max = 2 },
+                bread = { label = "Bread", weight = 6, min = 1, max = 1 },
+                canned_dog_food = { label = "Dog Food", weight = 3, min = 1, max = 1 }
             }
         }
     },
+
 }

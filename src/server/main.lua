@@ -162,7 +162,7 @@ RegisterServerEvent("rig_gathering:server:collect_searchable", function(category
     end
 
     for _, reward in ipairs(rewards) do
-        local success, err = exports.rig_inventory:add_item(source_id, reward.id, reward.amount)
+        local success, err = exports.rig_inventory:add_item(source_id, reward.id, reward.amount, nil, reward.metadata or nil, true)
         if success then
             exports.rig:notify(source_id, {
                 type = "success",
@@ -221,7 +221,7 @@ RegisterServerEvent("rig_gathering:server:hit_material", function(clean_hash, ma
     if not rewards or #rewards == 0 then return end
 
     for _, reward in ipairs(rewards) do
-        local success, err = exports.rig_inventory:add_item(source_id, reward.id, reward.amount)
+        local success, err = exports.rig_inventory:add_item(source_id, reward.id, reward.amount, nil, reward.metadata or nil, true)
         if success then
             exports.rig:notify(source_id, {
                 type = "success",
